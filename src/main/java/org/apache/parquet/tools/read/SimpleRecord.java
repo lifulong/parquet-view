@@ -50,12 +50,57 @@ public class SimpleRecord {
     return values.toString();
   }
 
+  public void normalPrint() {
+    normalPrint(new PrintWriter(System.out,true));
+  }
+
   public void prettyPrint() {
     prettyPrint(new PrintWriter(System.out,true));
   }
 
+  public void normalPrint(PrintWriter out) {
+    normalPrint(out, 0);
+  }
+
   public void prettyPrint(PrintWriter out) {
     prettyPrint(out, 0);
+  }
+
+  public void normalPrint(PrintWriter out, int depth) {
+    boolean firstField = true;
+    for (NameValue value: values) {
+      Object val = value.getValue();
+      if (firstField == true) {
+        firstField = false;
+      } else {
+        out.print(",");
+      }
+      if (val == null) {
+        out.print("<null>");
+      } else if (byte[].class == val.getClass()) {
+        out.print(new BinaryNode((byte[]) val).asText());
+      } else if (short[].class == val.getClass()) {
+        out.print(Arrays.toString((short[])val));
+      } else if (int[].class == val.getClass()) {
+        out.print(Arrays.toString((int[])val));
+      } else if (long[].class == val.getClass()) {
+        out.print(Arrays.toString((long[])val));
+      } else if (float[].class == val.getClass()) {
+        out.print(Arrays.toString((float[])val));
+      } else if (double[].class == val.getClass()) {
+        out.print(Arrays.toString((double[])val));
+      } else if (boolean[].class == val.getClass()) {
+        out.print(Arrays.toString((boolean[])val));
+      } else if (val.getClass().isArray()) {
+        out.print(Arrays.deepToString((Object[])val));
+      } else if (SimpleRecord.class.isAssignableFrom(val.getClass())) {
+        ((SimpleRecord)val).prettyPrint(out, depth+1);
+        continue;
+      } else {
+        out.print(String.valueOf(val));
+      }
+
+    }
   }
 
   public void prettyPrint(PrintWriter out, int depth) {

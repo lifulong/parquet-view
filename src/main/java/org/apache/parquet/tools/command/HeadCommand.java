@@ -46,11 +46,15 @@ public class HeadCommand extends ArgsOnlyCommand {
   public static final Options OPTIONS;
   static {
     OPTIONS = new Options();
-    Option help = OptionBuilder.withLongOpt("records")
+    Option num = OptionBuilder.withLongOpt("records")
                                .withDescription("The number of records to show (default: " + DEFAULT + ")")
                                .hasOptionalArg()
                                .create('n');
-    OPTIONS.addOption(help);
+    OPTIONS.addOption(num);
+    Option json = OptionBuilder.withLongOpt("json")
+            .withDescription("Show records in json format.")
+            .create('j');
+    OPTIONS.addOption(json);
   }
 
   public HeadCommand() {
@@ -92,7 +96,12 @@ public class HeadCommand extends ArgsOnlyCommand {
       JsonRecordFormatter.JsonGroupFormatter formatter = JsonRecordFormatter.fromSchema(metadata.getFileMetaData().getSchema());
       for (SimpleRecord value = reader.read(); value != null && num-- > 0; value = reader.read()) {
         //value.prettyPrint(writer);
-        writer.write(formatter.formatRecord(value));
+        //writer.write(formatter.formatRecord(value));
+        if (options.hasOption('j')) {
+          writer.write(formatter.formatRecord(value));
+        } else {
+          value.normalPrint(writer);
+        }
         writer.println();
       }
     } finally {

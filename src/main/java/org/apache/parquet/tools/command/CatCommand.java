@@ -44,10 +44,14 @@ public class CatCommand extends ArgsOnlyCommand {
   public static final Options OPTIONS;
   static {
     OPTIONS = new Options();
-    Option help = OptionBuilder.withLongOpt("pretty")
+    Option pretty = OptionBuilder.withLongOpt("pretty")
                                .withDescription("Show records in pretty format.")
                                .create('p');
-    OPTIONS.addOption(help);
+    OPTIONS.addOption(pretty);
+    Option json = OptionBuilder.withLongOpt("json")
+            .withDescription("Show records in json format.")
+            .create('j');
+    OPTIONS.addOption(json);
   }
 
   public CatCommand() {
@@ -86,8 +90,10 @@ public class CatCommand extends ArgsOnlyCommand {
       for (SimpleRecord value = reader.read(); value != null; value = reader.read()) {
         if (options.hasOption('p')) {
           value.prettyPrint(writer);
-        } else {
+        } else if(options.hasOption('j')) {
           writer.write(formatter.formatRecord(value));
+        } else {
+          value.normalPrint(writer);
         }
         writer.println();
       }
