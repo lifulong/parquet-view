@@ -1,7 +1,7 @@
 Parquet View
 ======
 
-Parquet-view improve from Parquet-Tools
+Parquet-view improve from Parquet-tools(https://github.com/apache/parquet-mr)
 
 ## Build
 
